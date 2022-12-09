@@ -2,35 +2,52 @@
 
 import ApiError from './ApiError.mjs';
 
-export const recurCheckFieldPerm = (updPerms, content, parent) => {
-  if (updPerms) {
-    Object.keys(content).forEach((field) => {
-      const value = content[field];
+const isNil = (value) => (value === null || value === undefined);
 
-      if (!(value === null || value === undefined)) {
-        if (typeof value === 'object') {
-          if (Array.isArray(value)) {
-            if (value.length) {
-              if (typeof value[0] === 'object') {
-                value.forEach((val, i) => {
-                  const path = parent ? `${parent}.${field}[${i}]` : `${field}[${i}]`;
-                  recurCheckFieldPerm(updPerms[field][0], val, path);
-                });
-              } else if (!updPerms[field]) {
-                const path = parent ? `${parent}.` : '';
-                throw new ApiError(403, `You are not allowed to update '${path}${field}' field.`);
+const genMessageDefault = (parent, field) => {
+  const path = parent ? `${parent}.` : '';
+  return `You are not allowed to update '${path}${field}' field.`;
+};
+
+const genMessageDrain = (parent, field) => {
+  const path = parent ? `${parent}.` : '';
+  return `You are not allowed to drain array field '${path}${field}'.`;
+};
+
+export const checkFieldPerm = (updPerms, data, parent) => {
+  if (updPerms) {
+    Object.keys(data).forEach((field) => {
+      const value = data[field];
+
+      if (typeof value === 'object') {
+        if (Array.isArray(value)) {
+          if (value.length) {
+            if (typeof value[0] === 'object') {
+              value.forEach((val, i) => {
+                const path = parent ? `${parent}.${field}[${i}]` : `${field}[${i}]`;
+                checkFieldPerm(updPerms[field][0], val, path);
+              });
+            } else if (updPerms[field] === false) {
+              throw new ApiError(403, genMessageDefault(parent, field));
+            } else if (isNil(updPerms[field])) {
+              if (updPerms['*'] === false) {
+                throw new ApiError(403, genMessageDefault(parent, field));
               }
-            } else {
-              const path = parent ? `${parent}.` : '';
-              throw new ApiError(403, `You are not allowed to drain array field '${path}${field}'.`);
             }
           } else {
-            const path = parent ? `${parent}.${field}` : field;
-            recurCheckFieldPerm(updPerms[field], content[field], path);
+            throw new ApiError(403, genMessageDrain(parent, field));
           }
-        } else if (!updPerms[field]) {
-          const path = parent ? `${parent}.` : '';
-          throw new ApiError(403, `You are not allowed to update '${path}${field}' field.`);
+        } else {
+          const path = parent
+            ? `${parent}.${field}`
+            : field;
+          checkFieldPerm(updPerms[field], data[field], path);
+        }
+      } else if (updPerms[field] === false) {
+        throw new ApiError(403, genMessageDefault(parent, field));
+      } else if (isNil(updPerms[field])) {
+        if (updPerms['*'] === false) {
+          throw new ApiError(403, genMessageDefault(parent, field));
         }
       }
     });
@@ -38,5 +55,5 @@ export const recurCheckFieldPerm = (updPerms, content, parent) => {
 };
 
 export default {
-  recurCheckFieldPerm,
+  checkFieldPerm,
 };
