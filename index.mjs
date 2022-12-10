@@ -1,7 +1,5 @@
 /* eslint-disable security/detect-object-injection */
 
-import ApiError from './ApiError.mjs';
-
 const isNil = (value) => (value === null || value === undefined);
 
 const genMessageDefault = (parent, field) => {
@@ -28,14 +26,14 @@ export const checkFieldPerm = (perms, data, parent) => {
                 checkFieldPerm(perms[field][0], val, path);
               });
             } else if (perms[field] === false) {
-              throw new ApiError(403, genMessageDefault(parent, field));
+              throw new Error(genMessageDefault(parent, field));
             } else if (isNil(perms[field])) {
               if (perms['*'] === false) {
-                throw new ApiError(403, genMessageDefault(parent, field));
+                throw new Error(genMessageDefault(parent, field));
               }
             }
           } else {
-            throw new ApiError(403, genMessageDrain(parent, field));
+            throw new Error(genMessageDrain(parent, field));
           }
         } else {
           const path = parent
@@ -44,10 +42,10 @@ export const checkFieldPerm = (perms, data, parent) => {
           checkFieldPerm(perms[field], data[field], path);
         }
       } else if (perms[field] === false) {
-        throw new ApiError(403, genMessageDefault(parent, field));
+        throw new Error(genMessageDefault(parent, field));
       } else if (isNil(perms[field])) {
         if (perms['*'] === false) {
-          throw new ApiError(403, genMessageDefault(parent, field));
+          throw new Error(genMessageDefault(parent, field));
         }
       }
     });
