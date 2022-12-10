@@ -14,8 +14,8 @@ const genMessageDrain = (parent, field) => {
   return `You are not allowed to drain array field '${path}${field}'.`;
 };
 
-export const checkFieldPerm = (updPerms, data, parent) => {
-  if (updPerms) {
+export const checkFieldPerm = (perms, data, parent) => {
+  if (perms) {
     Object.keys(data).forEach((field) => {
       const value = data[field];
 
@@ -25,12 +25,12 @@ export const checkFieldPerm = (updPerms, data, parent) => {
             if (typeof value[0] === 'object') {
               value.forEach((val, i) => {
                 const path = parent ? `${parent}.${field}[${i}]` : `${field}[${i}]`;
-                checkFieldPerm(updPerms[field][0], val, path);
+                checkFieldPerm(perms[field][0], val, path);
               });
-            } else if (updPerms[field] === false) {
+            } else if (perms[field] === false) {
               throw new ApiError(403, genMessageDefault(parent, field));
-            } else if (isNil(updPerms[field])) {
-              if (updPerms['*'] === false) {
+            } else if (isNil(perms[field])) {
+              if (perms['*'] === false) {
                 throw new ApiError(403, genMessageDefault(parent, field));
               }
             }
@@ -41,12 +41,12 @@ export const checkFieldPerm = (updPerms, data, parent) => {
           const path = parent
             ? `${parent}.${field}`
             : field;
-          checkFieldPerm(updPerms[field], data[field], path);
+          checkFieldPerm(perms[field], data[field], path);
         }
-      } else if (updPerms[field] === false) {
+      } else if (perms[field] === false) {
         throw new ApiError(403, genMessageDefault(parent, field));
-      } else if (isNil(updPerms[field])) {
-        if (updPerms['*'] === false) {
+      } else if (isNil(perms[field])) {
+        if (perms['*'] === false) {
           throw new ApiError(403, genMessageDefault(parent, field));
         }
       }
@@ -54,6 +54,22 @@ export const checkFieldPerm = (updPerms, data, parent) => {
   }
 };
 
+export const isVerbAuthorized = (xrud, verb) => {
+  const [POST, GET, PATCH, DELETE] = xrud;
+  let isAuthorized = false;
+
+  switch (verb) {
+    case 'GET': isAuthorized = GET === 'R' || GET === 'r'; break;
+    case 'POST': isAuthorized = POST === 'X' || POST === 'x'; break;
+    case 'PATCH': isAuthorized = PATCH === 'U' || PATCH === 'u'; break;
+    case 'DELETE': isAuthorized = DELETE === 'D' || DELETE === 'd'; break;
+    default: isAuthorized = false;
+  }
+
+  return isAuthorized;
+};
+
 export default {
   checkFieldPerm,
+  isVerbAuthorized,
 };
