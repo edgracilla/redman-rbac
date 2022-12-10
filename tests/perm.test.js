@@ -86,6 +86,12 @@ describe('Perm Check', () => {
       }).toThrow(error);
     });
 
+    it('should capture non primitive - arr field not in perm', () => {
+      const { perm, data } = fxt.nonPrimArrX;
+      const ret = checkFieldPerm(perm, data);
+      expect(ret).toBe(undefined);
+    });
+
     it('should capture non primitive - arr obj drain', () => {
       const { perm, data } = fxt.nonPrimArrObjDrain;
       const error = new ApiError(403, "You are not allowed to drain array field 'arr'.");
@@ -193,12 +199,6 @@ describe('Perm Check', () => {
   describe('Comply to coverage', () => {
     it('should not process if empty perm provided', () => {
       const ret = checkFieldPerm();
-      expect(ret).toBe(undefined);
-    });
-
-    it('should capture non primitive - arr', () => {
-      const { perm, data } = fxt.nonPrimArrX;
-      const ret = checkFieldPerm(perm, data);
       expect(ret).toBe(undefined);
     });
   });

@@ -39,16 +39,14 @@ export default {
     data: { arr: ['foo'] },
   },
 
-  // --
-  nonPrimArrX: {
-    perm: { foo: false },
-    data: { arr: ['foo'] },
-  },
-  // --
-
   nonPrimArrDrain: {
     perm: { arr: false },
     data: { arr: [] },
+  },
+
+  nonPrimArrX: {
+    perm: {},
+    data: { arr: ['arr field not in perm'] },
   },
 
   nonPrimArrObjDrain: {
