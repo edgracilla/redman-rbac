@@ -96,7 +96,7 @@ export default {
     data: { bar: ['field not in perm, wildcard false'] },
   },
   wildcardPrim3Arr: {
-    perm: { foo: false, _any: true },
+    perm: { foo: false, _others: true },
     data: { bar: ['field not in perm, wildcard true'] },
   },
 };

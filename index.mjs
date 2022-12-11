@@ -28,7 +28,7 @@ export const checkFieldPerm = (perms, data, parent) => {
             } else if (perms[field] === false) {
               throw new Error(genMessageDefault(parent, field));
             } else if (isNil(perms[field])) {
-              if (perms['*'] === false || perms._any === false) {
+              if (perms['*'] === false || perms._others === false) {
                 throw new Error(genMessageDefault(parent, field));
               }
             }
@@ -44,7 +44,7 @@ export const checkFieldPerm = (perms, data, parent) => {
       } else if (perms[field] === false) {
         throw new Error(genMessageDefault(parent, field));
       } else if (isNil(perms[field])) {
-        if (perms['*'] === false || perms._any === false) {
+        if (perms['*'] === false || perms._others === false) {
           throw new Error(genMessageDefault(parent, field));
         }
       }
