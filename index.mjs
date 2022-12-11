@@ -28,7 +28,9 @@ export const checkFieldPerm = (perms, data, parent) => {
             } else if (perms[field] === false) {
               throw new Error(genMessageDefault(parent, field));
             } else if (isNil(perms[field])) {
-              if (perms['*'] === false || perms._others === false) {
+              if (perms['*'] === true || perms._others === true) {
+                // noop
+              } else {
                 throw new Error(genMessageDefault(parent, field));
               }
             }
@@ -36,15 +38,15 @@ export const checkFieldPerm = (perms, data, parent) => {
             throw new Error(genMessageDrain(parent, field));
           }
         } else {
-          const path = parent
-            ? `${parent}.${field}`
-            : field;
+          const path = parent ? `${parent}.${field}` : field;
           checkFieldPerm(perms[field], data[field], path);
         }
       } else if (perms[field] === false) {
         throw new Error(genMessageDefault(parent, field));
       } else if (isNil(perms[field])) {
-        if (perms['*'] === false || perms._others === false) {
+        if (perms['*'] === true || perms._others === true) {
+          // noop
+        } else {
           throw new Error(genMessageDefault(parent, field));
         }
       }

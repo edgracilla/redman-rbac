@@ -87,8 +87,11 @@ describe('Perm Check', () => {
 
     it('should capture non primitive - arr field not in perm', () => {
       const { perm, data } = fxt.nonPrimArrX;
-      const ret = checkFieldPerm(perm, data);
-      expect(ret).toBe(undefined);
+      const error = new Error("You are not allowed to update 'arr' field.");
+
+      expect(() => {
+        checkFieldPerm(perm, data);
+      }).toThrow(error);
     });
 
     it('should capture non primitive - arr obj drain', () => {
@@ -147,13 +150,13 @@ describe('Perm Check', () => {
   });
 
   describe('Wildcard field perm', () => {
-    it('should capture: field not in perm, no wildcard perm - must allow', () => {
-      // to reduce perm contents we treated undefined or non existing field
-      // as ALLOWED and it will pass down to controller (silence means yes)
-
+    it('should capture: field not in perm, no wildcard perm - must not allow', () => {
       const { perm, data } = fxt.wildcardPrim1;
-      const ret = checkFieldPerm(perm, data);
-      expect(ret).toBe(undefined);
+      const error = new Error("You are not allowed to update 'bar' field.");
+
+      expect(() => {
+        checkFieldPerm(perm, data);
+      }).toThrow(error);
     });
 
     it('should capture: field not in perm, wildcard false', () => {
@@ -173,10 +176,13 @@ describe('Perm Check', () => {
   });
 
   describe('Wildcard field perm - array', () => {
-    it('should capture: field not in perm, no wildcard perm - must allow', () => {
+    it('should capture: field not in perm, no wildcard perm - must not allow', () => {
       const { perm, data } = fxt.wildcardPrim1Arr;
-      const ret = checkFieldPerm(perm, data);
-      expect(ret).toBe(undefined);
+      const error = new Error("You are not allowed to update 'bar' field.");
+
+      expect(() => {
+        checkFieldPerm(perm, data);
+      }).toThrow(error);
     });
 
     it('should capture: field not in perm, wildcard false', () => {
