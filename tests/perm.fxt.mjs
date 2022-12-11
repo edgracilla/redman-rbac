@@ -75,7 +75,7 @@ export default {
   },
 
   wildcardPrim1: {
-    perm: { foo: false }, // bar is ALLOWED
+    perm: { foo: false },
     data: { bar: 'field not in perm, no wildcard perm' },
   },
   wildcardPrim2: {
@@ -88,7 +88,7 @@ export default {
   },
 
   wildcardPrim1Arr: {
-    perm: { foo: false }, // bar is ALLOWED
+    perm: { foo: false },
     data: { bar: ['field not in perm, no wildcard perm'] },
   },
   wildcardPrim2Arr: {
