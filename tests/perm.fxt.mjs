@@ -1,8 +1,116 @@
 export default {
-  primitive: {
+  basic1: {
+    perm: { foo: true },
+    data: { foo: 'foo' },
+  },
+  basic2: {
     perm: { foo: false },
     data: { foo: 'foo' },
   },
+  basic3: {
+    perm: {},
+    data: { foo: 'foo' },
+  },
+  basic4: {
+    perm: { _others: false },
+    data: { foo: 'foo' },
+  },
+  basic5: {
+    perm: { _others: true },
+    data: { foo: 'foo' },
+  },
+
+  // --
+
+  obj1: {
+    perm: { obj: { bar: true } },
+    data: { obj: { bar: 'bar' } },
+  },
+  obj2: {
+    perm: { obj: { bar: false } },
+    data: { obj: { bar: 'bar' } },
+  },
+  obj3: {
+    perm: { obj: {} },
+    data: { obj: { bar: 'bar' } },
+  },
+  obj4: {
+    perm: { obj: { _others: false } },
+    data: { obj: { bar: 'bar' } },
+  },
+  obj5: {
+    perm: { obj: { _others: true } },
+    data: { obj: { bar: 'bar' } },
+  },
+  obj6: {
+    perm: {},
+    data: { obj: { bar: 'bar' } },
+  },
+  obj7: {
+    perm: { _others: false },
+    data: { obj: { bar: 'bar' } },
+  },
+  obj8: {
+    perm: { _others: true },
+    data: { obj: { bar: 'bar' } },
+  },
+
+  // --
+
+  objNest1: {
+    perm: { obj: { foo: { bar: true } } },
+    data: { obj: { foo: { bar: 123 } } },
+  },
+  objNest2: {
+    perm: { obj: { foo: { bar: false } } },
+    data: { obj: { foo: { bar: 123 } } },
+  },
+  objNest3: {
+    perm: { obj: { foo: {} } },
+    data: { obj: { foo: { bar: 123 } } },
+  },
+  objNest4: {
+    perm: { obj: { foo: { _others: false } } },
+    data: { obj: { foo: { bar: 123 } } },
+  },
+  objNest5: {
+    perm: { obj: { foo: { _others: true } } },
+    data: { obj: { foo: { bar: 123 } } },
+  },
+  objNest6: {
+    perm: { obj: {} },
+    data: { obj: { foo: { bar: 123 } } },
+  },
+  objNest7: {
+    perm: { obj: { _others: false } },
+    data: { obj: { foo: { bar: 123 } } },
+  },
+  objNest8: {
+    perm: { obj: { _others: true } },
+    data: { obj: { foo: { bar: 123 } } },
+  },
+  objNest9: {
+    perm: {},
+    data: { obj: { foo: { bar: 123 } } },
+  },
+  objNest10: {
+    perm: { _others: false },
+    data: { obj: { foo: { bar: 123 } } },
+  },
+  objNest11: {
+    perm: { _others: true },
+    data: { obj: { foo: { bar: 123 } } },
+  },
+
+  // --
+
+  // arrBasic
+  // arrObj
+  // arrObjNest
+  // arrObjArrObj
+  // arrObjArrObjNest
+
+  // --
 
   nonPrimObj: {
     perm: { obj: { bar: false } },
@@ -69,6 +177,10 @@ export default {
     perm: { arr: [{ foo: { bar: false } }] },
     data: { arr: [{ foo: { bar: ['bar'] } }] },
   },
+  nonPrimArrObj0NestArrX: {
+    perm: { _others: true },
+    data: { items: [{ name: 'foo' }] },
+  },
   nonPrimArrObj0NestArrDrain: {
     perm: { arr: [{ foo: { bar: false } }] },
     data: { arr: [{ foo: { bar: [] } }] },
@@ -87,15 +199,15 @@ export default {
     data: { bar: 'field not in perm, wildcard true' },
   },
 
-  wildcardPrim1Arr: {
+  wildcardArr1: {
     perm: { foo: false },
     data: { bar: ['field not in perm, no wildcard perm'] },
   },
-  wildcardPrim2Arr: {
+  wildcardArr2: {
     perm: { foo: false, '*': false },
     data: { bar: ['field not in perm, wildcard false'] },
   },
-  wildcardPrim3Arr: {
+  wildcardArr3: {
     perm: { foo: false, _others: true },
     data: { bar: ['field not in perm, wildcard true'] },
   },

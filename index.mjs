@@ -17,10 +17,10 @@ export const checkFieldPerm = (perms, data, parent) => {
     Object.keys(data).forEach((field) => {
       const value = data[field];
 
-      if (typeof value === 'object') {
+      if (typeof value === 'object' && perms[field]) {
         if (Array.isArray(value)) {
           if (value.length) {
-            if (typeof value[0] === 'object') {
+            if (typeof value[0] === 'object' && perms[field]) {
               value.forEach((val, i) => {
                 const path = parent ? `${parent}.${field}[${i}]` : `${field}[${i}]`;
                 checkFieldPerm(perms[field][0], val, path);
