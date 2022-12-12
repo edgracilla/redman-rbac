@@ -6,7 +6,7 @@ describe('Perm Check', () => {
   describe('Basic nesting fields', () => {
     it('should capture basic primitive', () => {
       const { perm, data } = fxt.primitive;
-      const error = new Error("You are not allowed to update 'foo' field.");
+      const error = new Error("You are not allowed to submit 'foo' field.");
 
       expect(() => {
         checkFieldPerm(perm, data);
@@ -15,7 +15,7 @@ describe('Perm Check', () => {
 
     it('should capture non primitive - obj', () => {
       const { perm, data } = fxt.nonPrimObj;
-      const error = new Error("You are not allowed to update 'obj.bar' field.");
+      const error = new Error("You are not allowed to submit 'obj.bar' field.");
 
       expect(() => {
         checkFieldPerm(perm, data);
@@ -24,7 +24,7 @@ describe('Perm Check', () => {
 
     it('should capture non primitive - obj arr obj', () => {
       const { perm, data } = fxt.nonPrimObjArrObj;
-      const error = new Error("You are not allowed to update 'obj.foo[0].bar' field.");
+      const error = new Error("You are not allowed to submit 'obj.foo[0].bar' field.");
 
       expect(() => {
         checkFieldPerm(perm, data);
@@ -33,7 +33,7 @@ describe('Perm Check', () => {
 
     it('should capture non primitive - obj nested', () => {
       const { perm, data } = fxt.nonPrimObjNest1;
-      const error = new Error("You are not allowed to update 'obj.nest1.foo' field.");
+      const error = new Error("You are not allowed to submit 'obj.nest1.foo' field.");
 
       expect(() => {
         checkFieldPerm(perm, data);
@@ -42,7 +42,7 @@ describe('Perm Check', () => {
 
     it('should capture non primitive - obj nested deep', () => {
       const { perm, data } = fxt.nonPrimObjNestDeep;
-      const error = new Error("You are not allowed to update 'obj.aa.bb.cc.bar' field.");
+      const error = new Error("You are not allowed to submit 'obj.aa.bb.cc.bar' field.");
 
       expect(() => {
         checkFieldPerm(perm, data);
@@ -51,7 +51,7 @@ describe('Perm Check', () => {
 
     it('should capture non primitive - obj nested deep arr', () => {
       const { perm, data } = fxt.nonPrimObjNestDeepArr;
-      const error = new Error("You are not allowed to update 'obj.aa.bb.cc.bar' field.");
+      const error = new Error("You are not allowed to submit 'obj.aa.bb.cc.bar' field.");
 
       expect(() => {
         checkFieldPerm(perm, data);
@@ -69,7 +69,7 @@ describe('Perm Check', () => {
 
     it('should capture non primitive - arr', () => {
       const { perm, data } = fxt.nonPrimArr;
-      const error = new Error("You are not allowed to update 'arr' field.");
+      const error = new Error("You are not allowed to submit 'arr' field.");
 
       expect(() => {
         checkFieldPerm(perm, data);
@@ -87,7 +87,7 @@ describe('Perm Check', () => {
 
     it('should capture non primitive - arr field not in perm', () => {
       const { perm, data } = fxt.nonPrimArrX;
-      const error = new Error("You are not allowed to update 'arr' field.");
+      const error = new Error("You are not allowed to submit 'arr' field.");
 
       expect(() => {
         checkFieldPerm(perm, data);
@@ -105,7 +105,7 @@ describe('Perm Check', () => {
 
     it('should capture non primitive - arr obj index 0', () => {
       const { perm, data } = fxt.nonPrimArrObj0;
-      const error = new Error("You are not allowed to update 'arr[0].foo' field.");
+      const error = new Error("You are not allowed to submit 'arr[0].foo' field.");
 
       expect(() => {
         checkFieldPerm(perm, data);
@@ -114,7 +114,7 @@ describe('Perm Check', () => {
 
     it('should capture non primitive - arr obj index 1', () => {
       const { perm, data } = fxt.nonPrimArrObj1;
-      const error = new Error("You are not allowed to update 'arr[1].bar' field.");
+      const error = new Error("You are not allowed to submit 'arr[1].bar' field.");
 
       expect(() => {
         checkFieldPerm(perm, data);
@@ -123,7 +123,7 @@ describe('Perm Check', () => {
 
     it('should capture non primitive - arr obj index 0 nest', () => {
       const { perm, data } = fxt.nonPrimArrObj0Nest;
-      const error = new Error("You are not allowed to update 'arr[0].foo.bar' field.");
+      const error = new Error("You are not allowed to submit 'arr[0].foo.bar' field.");
 
       expect(() => {
         checkFieldPerm(perm, data);
@@ -132,7 +132,7 @@ describe('Perm Check', () => {
 
     it('should capture non primitive - arr obj index 0 nest arr', () => {
       const { perm, data } = fxt.nonPrimArrObj0NestArr;
-      const error = new Error("You are not allowed to update 'arr[0].foo.bar' field.");
+      const error = new Error("You are not allowed to submit 'arr[0].foo.bar' field.");
 
       expect(() => {
         checkFieldPerm(perm, data);
@@ -152,7 +152,7 @@ describe('Perm Check', () => {
   describe('Wildcard field perm', () => {
     it('should capture: field not in perm, no wildcard perm - must not allow', () => {
       const { perm, data } = fxt.wildcardPrim1;
-      const error = new Error("You are not allowed to update 'bar' field.");
+      const error = new Error("You are not allowed to submit 'bar' field.");
 
       expect(() => {
         checkFieldPerm(perm, data);
@@ -161,7 +161,7 @@ describe('Perm Check', () => {
 
     it('should capture: field not in perm, wildcard false', () => {
       const { perm, data } = fxt.wildcardPrim2;
-      const error = new Error("You are not allowed to update 'bar' field.");
+      const error = new Error("You are not allowed to submit 'bar' field.");
 
       expect(() => {
         checkFieldPerm(perm, data);
@@ -178,7 +178,7 @@ describe('Perm Check', () => {
   describe('Wildcard field perm - array', () => {
     it('should capture: field not in perm, no wildcard perm - must not allow', () => {
       const { perm, data } = fxt.wildcardPrim1Arr;
-      const error = new Error("You are not allowed to update 'bar' field.");
+      const error = new Error("You are not allowed to submit 'bar' field.");
 
       expect(() => {
         checkFieldPerm(perm, data);
@@ -187,7 +187,7 @@ describe('Perm Check', () => {
 
     it('should capture: field not in perm, wildcard false', () => {
       const { perm, data } = fxt.wildcardPrim2Arr;
-      const error = new Error("You are not allowed to update 'bar' field.");
+      const error = new Error("You are not allowed to submit 'bar' field.");
 
       expect(() => {
         checkFieldPerm(perm, data);

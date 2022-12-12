@@ -4,7 +4,7 @@ const isNil = (value) => (value === null || value === undefined);
 
 const genMessageDefault = (parent, field) => {
   const path = parent ? `${parent}.` : '';
-  return `You are not allowed to update '${path}${field}' field.`;
+  return `You are not allowed to submit '${path}${field}' field.`;
 };
 
 const genMessageDrain = (parent, field) => {
