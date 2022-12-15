@@ -1,6 +1,8 @@
 /* eslint-disable security/detect-object-injection */
 
+const arrSentries = ['_new', '_upd', '_del'];
 const isNil = (value) => (value === null || value === undefined);
+const intersection = (arr1 = [], arr2 = []) => arr1.filter((x) => arr2.includes(x));
 
 const genMessageDefault = (parent, field) => {
   const path = parent ? `${parent}.` : '';
@@ -10,6 +12,11 @@ const genMessageDefault = (parent, field) => {
 const genMessageDrain = (parent, field) => {
   const path = parent ? `${parent}.` : '';
   return `You are not allowed to drain array field '${path}${field}'.`;
+};
+
+const genMessageSentry = (parent, field) => {
+  const path = parent ? `${parent}.` : '';
+  return `Array sentry (_new, _upd, _del) must be present in '${path}${field}'.`;
 };
 
 export const checkFieldPerm = (perms, data, parent) => {
@@ -24,8 +31,15 @@ export const checkFieldPerm = (perms, data, parent) => {
             if (typeof value[0] === 'object' && perm) {
               if (typeof perm[0] === 'object' && perm.length) {
                 value.forEach((val, i) => {
+                  const permKeys = Object.keys(perm[0]);
+                  const sentry = intersection(permKeys, arrSentries);
                   const path = parent ? `${parent}.${field}[${i}]` : `${field}[${i}]`;
-                  checkFieldPerm(perm[0], val, path);
+
+                  if (sentry.length || !permKeys.length) {
+                    checkFieldPerm(perm[0], val, path);
+                  } else {
+                    throw new Error(genMessageSentry(parent, path));
+                  }
                 });
               } else {
                 throw new Error(genMessageDefault(parent, field));

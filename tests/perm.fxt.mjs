@@ -151,11 +151,11 @@ export default {
   // -- arr object
 
   arrObj1: {
-    perm: { arr: [{ foo: true }] },
+    perm: { arr: [{ foo: true, _new: true }] },
     data: { arr: [{ foo: 'foo' }] },
   },
   arrObj2: {
-    perm: { arr: [{ foo: false }] },
+    perm: { arr: [{ foo: false, _upd: 1 }] },
     data: { arr: [{ foo: 'foo' }] },
   },
   arrObj3: {
@@ -163,11 +163,11 @@ export default {
     data: { arr: [{ foo: 'foo' }] },
   },
   arrObj4: {
-    perm: { arr: [{ _others: false }] },
+    perm: { arr: [{ _others: false, _del: 'any val' }] },
     data: { arr: [{ foo: 'foo' }] },
   },
   arrObj5: {
-    perm: { arr: [{ _others: true }] },
+    perm: { arr: [{ _others: true, _new: 0 }] },
     data: { arr: [{ foo: 'foo' }] },
   },
 
@@ -201,7 +201,7 @@ export default {
   },
 
   nonPrimObjArrObj: {
-    perm: { obj: { foo: [{ bar: false }] } },
+    perm: { obj: { foo: [{ bar: false, _upd: {} }] } },
     data: { obj: { foo: [{ bar: 'bar' }] } },
   },
 
@@ -245,19 +245,19 @@ export default {
     data: { arr: [] },
   },
   nonPrimArrObj0: {
-    perm: { arr: [{ foo: false }] },
+    perm: { arr: [{ foo: false, _del: [] }] },
     data: { arr: [{ foo: 'foo' }] },
   },
   nonPrimArrObj1: {
-    perm: { arr: [{ foo: true, bar: false }] },
+    perm: { arr: [{ foo: true, bar: false, _new: 1 }] },
     data: { arr: [{ foo: 'foo' }, { bar: 'bar' }] },
   },
   nonPrimArrObj0Nest: {
-    perm: { arr: [{ foo: { bar: false } }] },
+    perm: { arr: [{ foo: { bar: false }, _upd: 1 }] },
     data: { arr: [{ foo: { bar: 'bar' } }] },
   },
   nonPrimArrObj0NestArr: {
-    perm: { arr: [{ foo: { bar: false } }] },
+    perm: { arr: [{ foo: { bar: false }, _del: 1 }] },
     data: { arr: [{ foo: { bar: ['bar'] } }] },
   },
   nonPrimArrObj0NestArrX: {
@@ -265,7 +265,7 @@ export default {
     data: { items: [{ name: 'foo' }] },
   },
   nonPrimArrObj0NestArrDrain: {
-    perm: { arr: [{ foo: { bar: false } }] },
+    perm: { arr: [{ foo: { bar: false }, _new: 'foo' }] },
     data: { arr: [{ foo: { bar: [] } }] },
   },
 
