@@ -16,18 +16,23 @@ export const checkFieldPerm = (perms, data, parent) => {
   if (perms) {
     Object.keys(data).forEach((field) => {
       const value = data[field];
+      const perm = perms[field];
 
-      if (typeof value === 'object' && perms[field]) {
+      if (typeof value === 'object' && perm) {
         if (Array.isArray(value)) {
           if (value.length) {
-            if (typeof value[0] === 'object' && perms[field]) {
-              value.forEach((val, i) => {
-                const path = parent ? `${parent}.${field}[${i}]` : `${field}[${i}]`;
-                checkFieldPerm(perms[field][0], val, path);
-              });
-            } else if (perms[field] === false) {
+            if (typeof value[0] === 'object' && perm) {
+              if (typeof perm[0] === 'object' && perm.length) {
+                value.forEach((val, i) => {
+                  const path = parent ? `${parent}.${field}[${i}]` : `${field}[${i}]`;
+                  checkFieldPerm(perm[0], val, path);
+                });
+              } else {
+                throw new Error(genMessageDefault(parent, field));
+              }
+            } else if (perm === false) {
               throw new Error(genMessageDefault(parent, field));
-            } else if (isNil(perms[field])) {
+            } else if (isNil(perm)) {
               if (perms['*'] === true || perms._others === true) {
                 // noop
               } else {
@@ -39,13 +44,15 @@ export const checkFieldPerm = (perms, data, parent) => {
           }
         } else {
           const path = parent ? `${parent}.${field}` : field;
-          checkFieldPerm(perms[field], data[field], path);
+          checkFieldPerm(perm, data[field], path);
         }
-      } else if (perms[field] === false) {
+      } else if (perm === false) {
         throw new Error(genMessageDefault(parent, field));
-      } else if (isNil(perms[field])) {
+      } else if (isNil(perm)) {
         if (perms['*'] === true || perms._others === true) {
-          // noop
+          if (Array.isArray(value) && !value.length) {
+            throw new Error(genMessageDrain(parent, field));
+          }
         } else {
           throw new Error(genMessageDefault(parent, field));
         }

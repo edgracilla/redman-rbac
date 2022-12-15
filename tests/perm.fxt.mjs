@@ -20,7 +20,7 @@ export default {
     data: { foo: 'foo' },
   },
 
-  // --
+  // -- basic object
 
   obj1: {
     perm: { obj: { bar: true } },
@@ -55,7 +55,7 @@ export default {
     data: { obj: { bar: 'bar' } },
   },
 
-  // --
+  // -- nested object
 
   objNest1: {
     perm: { obj: { foo: { bar: true } } },
@@ -102,15 +102,98 @@ export default {
     data: { obj: { foo: { bar: 123 } } },
   },
 
-  // --
+  // -- arr primitive
 
-  // arrBasic
-  // arrObj
+  arr1: {
+    perm: { arr: true },
+    data: { arr: ['foo'] },
+  },
+  arr2: {
+    perm: { arr: false },
+    data: { arr: ['foo'] },
+  },
+  arr3: {
+    perm: {},
+    data: { arr: ['foo'] },
+  },
+  arr4: {
+    perm: { _others: false },
+    data: { arr: ['foo'] },
+  },
+  arr5: {
+    perm: { _others: true },
+    data: { arr: ['foo'] },
+  },
+
+  // -- arr drain
+
+  arr1drain: {
+    perm: { arr: true },
+    data: { arr: [] },
+  },
+  arr2drain: {
+    perm: { arr: false },
+    data: { arr: [] },
+  },
+  arr3drain: {
+    perm: {},
+    data: { arr: [] },
+  },
+  arr4drain: {
+    perm: { _others: false },
+    data: { arr: [] },
+  },
+  arr5drain: {
+    perm: { _others: true },
+    data: { arr: [] },
+  },
+
+  // -- arr object
+
+  arrObj1: {
+    perm: { arr: [{ foo: true }] },
+    data: { arr: [{ foo: 'foo' }] },
+  },
+  arrObj2: {
+    perm: { arr: [{ foo: false }] },
+    data: { arr: [{ foo: 'foo' }] },
+  },
+  arrObj3: {
+    perm: { arr: [{}] },
+    data: { arr: [{ foo: 'foo' }] },
+  },
+  arrObj4: {
+    perm: { arr: [{ _others: false }] },
+    data: { arr: [{ foo: 'foo' }] },
+  },
+  arrObj5: {
+    perm: { arr: [{ _others: true }] },
+    data: { arr: [{ foo: 'foo' }] },
+  },
+
+  arrObj6: {
+    perm: { arr: [] },
+    data: { arr: [{ foo: 'foo' }] },
+  },
+  arrObj7: {
+    perm: {},
+    data: { arr: [{ foo: 'foo' }] },
+  },
+  arrObj8: {
+    perm: { _others: false },
+    data: { arr: [{ foo: 'foo' }] },
+  },
+  arrObj9: {
+    perm: { _others: true },
+    data: { arr: [{ foo: 'foo' }] },
+  },
+
+  // TODO:
   // arrObjNest
   // arrObjArrObj
   // arrObjArrObjNest
 
-  // --
+  // -- old test approach
 
   nonPrimObj: {
     perm: { obj: { bar: false } },
