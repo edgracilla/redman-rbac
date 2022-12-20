@@ -1,4 +1,3 @@
-/* eslint-disable no-sparse-arrays */
 import { checkPermAndCompile } from '../index.mjs';
 
 const perms = [
@@ -81,7 +80,7 @@ describe('Perm Check', () => {
 
   it('should allow update: collection field', () => {
     const patch = [{ op: 'replace', path: '/items/1/soldOut', value: true }];
-    expect(checkPermAndCompile(perms, patch, 'xru-')).toEqual({ items: [, { soldOut: true }] });
+    expect(checkPermAndCompile(perms, patch, 'xru-')).toEqual({ items: [{ soldOut: true }] });
   });
 
   it('should allow:', () => {
@@ -89,7 +88,6 @@ describe('Perm Check', () => {
       {
         name: 'Test Addonx',
         items: [
-          ,
           { soldOut: true },
           {
             active: true, name: 'abc', price: 3, soldOut: false,

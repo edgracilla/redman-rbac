@@ -48,7 +48,7 @@ export const checkPermAndCompile = (fields, patches, xrud) => {
     }
 
     if (['add', 'replace'].includes(op)) {
-      jptr.set(data, path, value);
+      jptr.set(data, path.replace(/\/\d/, '/-'), value);
     }
   }
 
