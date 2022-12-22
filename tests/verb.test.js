@@ -1,4 +1,4 @@
-import { isVerbAuthorized } from '../index.mjs';
+import { isVerbAuthorized, translateVerbPerm } from '../index.mjs';
 
 /**
  * NOTE: it is highly influenced by File System symbolic notation
@@ -116,6 +116,38 @@ describe('Http Verb Auth', () => {
     it('should not allow TRACE', () => {
       const ret = isVerbAuthorized(verbPerms.gnostic, 'TRACE');
       expect(ret).toBe(false);
+    });
+  });
+
+  describe('Group Perm', () => {
+    it('should translate falsy verb perm', () => {
+      const ret = translateVerbPerm(verbPerms.agnostic);
+      expect(ret).toEqual({
+        executeOwned: false,
+        readOwned: false,
+        updateOwned: false,
+        deleteOwned: false,
+      });
+    });
+
+    it('should translate falsy verb perm - dashed', () => {
+      const ret = translateVerbPerm(verbPerms.negate);
+      expect(ret).toEqual({
+        executeOwned: false,
+        readOwned: false,
+        updateOwned: false,
+        deleteOwned: false,
+      });
+    });
+
+    it('should translate truthy verb perm', () => {
+      const ret = translateVerbPerm(verbPerms.gnostic);
+      expect(ret).toEqual({
+        executeOwned: true,
+        readOwned: true,
+        updateOwned: true,
+        deleteOwned: true,
+      });
     });
   });
 });
