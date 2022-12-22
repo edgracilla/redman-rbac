@@ -1,4 +1,6 @@
+/* eslint-disable no-param-reassign */
 /* eslint-disable security/detect-object-injection */
+
 import jptr from 'jsonpointer';
 
 const makeMessage = (action, field) => `You are not allowed to ${action} '${field}'.`;
@@ -18,6 +20,25 @@ export const isVerbAuthorized = (xrud, verb) => {
   return isAuthorized;
 };
 
+const stripNilArrItem = (obj) => {
+  const keys = Object.keys(obj);
+
+  for (let i = 0; i < keys.length; i += 1) {
+    const key = keys[i];
+    const val = obj[key];
+
+    if (typeof val === 'object') {
+      if (Array.isArray(val)) {
+        obj[key] = val.filter((e) => ![null, undefined].includes(e));
+      } else {
+        stripNilArrItem(obj[key]);
+      }
+    }
+  }
+
+  return obj;
+};
+
 export const checkPermAndCompile = (fields, patches, xrud) => {
   const [add, , upd, del] = xrud;
 
@@ -26,9 +47,11 @@ export const checkPermAndCompile = (fields, patches, xrud) => {
   const canDel = del === 'D' || del === 'd';
 
   const data = {};
+  let hasArray = false;
 
   for (let i = 0; i < patches.length; i += 1) {
     const { op, path, value } = patches[i];
+    const isArrayItem = /\/\d\//.test(path);
 
     if (op === 'add' && !canAdd) throw new Error(makeMessage('add', path));
     if (op === 'remove' && !canDel) throw new Error(makeMessage('delete', path));
@@ -38,7 +61,7 @@ export const checkPermAndCompile = (fields, patches, xrud) => {
         throw new Error(makeMessage('update', path));
       }
 
-      if (/\/\d\//.test(path)) {
+      if (isArrayItem) {
         if (!fields.includes(path.replace(/\/\d\//g, '/*/'))) {
           throw new Error(makeMessage('update collection field', path));
         }
@@ -48,11 +71,12 @@ export const checkPermAndCompile = (fields, patches, xrud) => {
     }
 
     if (['add', 'replace'].includes(op)) {
-      jptr.set(data, path.replace(/\/\d/, '/-'), value);
+      if (!hasArray && isArrayItem) hasArray = isArrayItem;
+      jptr.set(data, path, value);
     }
   }
 
-  return data;
+  return stripNilArrItem(data);
 };
 
 export default {
