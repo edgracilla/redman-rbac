@@ -1,8 +1,8 @@
 # Verb Based RBAC
 A not so simple Role-Based Access Control System
 
-It is highly influenced by File System symbolic notation
-https://en.wikipedia.org/wiki/File-system_permissions
+It is highly influenced by [https://en.wikipedia.org/wiki/File-system_permissions](File System) symbolic notation
+
 
 e.g. \
 `-rwxr-xr-x` \
@@ -17,9 +17,9 @@ In Verb Based Auth we do: \
 Basically a row represent as `[POST, GET, PATCH, DELETE]`
 and each column char has a tristate value:
 
-1. `-` or non `xrud` char represents - no access
+1. `-` or non `xrud` char represents - no access.
 2. lowercase `xrud` char represents - partial access, which needs addition checking see below.
-3. uppercase `XRUD` char represents - full access
+3. uppercase `XRUD` char represents - full access.
 
 Lowercase (xrud) represents as a hint for the succeding process that that verb procedure
 needs a controller level added permission checking. Such as checking if the product belongs
