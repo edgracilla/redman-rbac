@@ -5,14 +5,14 @@ import jptr from 'jsonpointer';
 
 const makeMessage = (action, field) => `You are not allowed to ${action} '${field}'.`;
 
-export const translateVerbPerm = (xrud) => {
+export const toPartialPerm = (xrud) => {
   const [POST, GET, PATCH, DELETE] = xrud;
 
   return {
-    readOwned: GET === 'R',
-    executeOwned: POST === 'X',
-    updateOwned: PATCH === 'U',
-    deleteOwned: DELETE === 'D',
+    readOwned: GET === 'r',
+    executeOwned: POST === 'x',
+    updateOwned: PATCH === 'u',
+    deleteOwned: DELETE === 'd',
   };
 };
 

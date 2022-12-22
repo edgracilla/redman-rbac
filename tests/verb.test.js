@@ -1,27 +1,37 @@
-import { isVerbAuthorized, translateVerbPerm } from '../index.mjs';
+import { isVerbAuthorized, toPartialPerm } from '../index.mjs';
 
 /**
- * NOTE: it is highly influenced by File System symbolic notation
+ * Verb Based RBAC
+ *
+ * It is highly influenced by File System symbolic notation
  * https://en.wikipedia.org/wiki/File-system_permissions
  *
  * e.g.
  * -rwxr-xr-x
  * crw-rw-r--
  *
- * in Verb Based Auth we do:
- * 'x---' for create/execute access
- * '-r--' for read access
- * '--u-' for update access
- * '---d' for delete access
+ * In Verb Based Auth we do:
+ * 'x---' for create/execute access (POST)
+ * '-r--' for read access (GET)
+ * '--u-' for update access (PATCH)
+ * '---d' for delete access (DELETE)
  *
- * Uppercase (XRUD) represents as a hint for the succeding process that that verb procedure
- * needs a controller level added permission checking. Such as checking if the product
- * belongs to a merchant, or asset belongs to a building, etc.
+ * Basically a row represent as [POST, GET, PATCH, DELETE]
+ * and each column char has a tristate value:
+ *
+ * 1. '-' or non 'xrud' char represents - no access
+ * 2. lowercase 'xrud' char represents - partial access, which needs addition checking see below.
+ * 3. uppercase 'XRUD' char represents - full access
+ *
+ * Lowercase (xrud) represents as a hint for the succeding process that that verb procedure
+ * needs a controller level added permission checking. Such as checking if the product belongs
+ * to a merchant, or asset belongs to a building, etc. This will blatantly fall in your
+ * db query and database design.
  */
 
 const verbPerms = {
-  agnostic: 'xrud',
-  gnostic: 'XRUD',
+  agnostic: 'XRUD',
+  gnostic: 'xrud',
   negate: '----',
 };
 
@@ -92,7 +102,7 @@ describe('Http Verb Auth', () => {
     });
   });
 
-  describe('Negate non supported verbs', () => { // TODO: explain why?
+  describe('Negate non supported verbs', () => {
     it('should not allow HEAD', () => {
       const ret = isVerbAuthorized(verbPerms.gnostic, 'HEAD');
       expect(ret).toBe(false);
@@ -121,7 +131,7 @@ describe('Http Verb Auth', () => {
 
   describe('Group Perm', () => {
     it('should translate falsy verb perm', () => {
-      const ret = translateVerbPerm(verbPerms.agnostic);
+      const ret = toPartialPerm(verbPerms.agnostic);
       expect(ret).toEqual({
         executeOwned: false,
         readOwned: false,
@@ -131,7 +141,7 @@ describe('Http Verb Auth', () => {
     });
 
     it('should translate falsy verb perm - dashed', () => {
-      const ret = translateVerbPerm(verbPerms.negate);
+      const ret = toPartialPerm(verbPerms.negate);
       expect(ret).toEqual({
         executeOwned: false,
         readOwned: false,
@@ -141,7 +151,7 @@ describe('Http Verb Auth', () => {
     });
 
     it('should translate truthy verb perm', () => {
-      const ret = translateVerbPerm(verbPerms.gnostic);
+      const ret = toPartialPerm(verbPerms.gnostic);
       expect(ret).toEqual({
         executeOwned: true,
         readOwned: true,
