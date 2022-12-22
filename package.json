@@ -1,5 +1,5 @@
 {
-  "name": "redman-rbac",
+  "name": "verb-based-rbac",
   "version": "0.0.1",
   "description": "A not so simple Role-Based Access Control System",
   "main": "index.mjs",
@@ -11,15 +11,15 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/edgracilla/redman-rbac.git"
+    "url": "git+https://github.com/edgracilla/verb-based-rbac.git"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/edgracilla/redman-rbac/issues"
+    "url": "https://github.com/edgracilla/verb-based-rbac/issues"
   },
-  "homepage": "https://github.com/edgracilla/redman-rbac#readme",
+  "homepage": "https://github.com/edgracilla/verb-based-rbac#readme",
   "devDependencies": {
     "eslint": "^8.29.0",
     "eslint-config-airbnb": "^19.0.4",
