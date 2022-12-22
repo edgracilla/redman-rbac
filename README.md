@@ -1,7 +1,7 @@
 # Verb Based RBAC
 A not so simple Role-Based Access Control System
 
-It is highly influenced by [https://en.wikipedia.org/wiki/File-system_permissions](File System) symbolic notation
+It is highly influenced by [File System](https://en.wikipedia.org/wiki/File-system_permissions) symbolic notation
 
 
 e.g. \
