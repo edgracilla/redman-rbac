@@ -60,6 +60,10 @@ export const checkPermAndCompile = (fields, patches, xrud) => {
   const data = {};
   let hasArray = false;
 
+  if (!patches.length) {
+    throw new Error('Empty JSON patch map.');
+  }
+
   for (let i = 0; i < patches.length; i += 1) {
     const { op, path, value } = patches[i];
     const isArrayItem = /\/\d\//.test(path);
