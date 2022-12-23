@@ -73,13 +73,13 @@ export const checkPermAndCompile = (fields, patches, xrud) => {
     const isArrayItem = /\/\d\//.test(path);
 
     if (op === 'add') {
-      if (canAdd) addOps.push(patches[i])
+      if (canAdd) addOps.push(patches[i]);
       else throw new Error(makeMessage('add', path));
     }
 
     if (op === 'remove') {
-      if (canDel) delOps.push(patches[i])
-      else throw new Error(makeMessage('delete', path));  
+      if (canDel) delOps.push(patches[i]);
+      else throw new Error(makeMessage('delete', path));
     }
 
     if (op === 'replace') {
@@ -95,7 +95,7 @@ export const checkPermAndCompile = (fields, patches, xrud) => {
         throw new Error(makeMessage('update field', path));
       }
 
-      updOps.push(patches[i])
+      updOps.push(patches[i]);
     }
 
     if (['add', 'replace'].includes(op)) {
