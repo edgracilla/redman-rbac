@@ -12,10 +12,6 @@ const patches = [
     value: 'Test Addonx',
   },
   {
-    op: 'remove',
-    path: '/items/0',
-  },
-  {
     op: 'replace',
     path: '/items/1/soldOut',
     value: true,
@@ -29,6 +25,10 @@ const patches = [
       price: 3,
       soldOut: false,
     },
+  },
+  {
+    op: 'remove',
+    path: '/items/0',
   },
 ];
 
@@ -52,18 +52,21 @@ describe('Perm Check', () => {
   });
 
   it('should allow add', () => {
-    const patch = [{ op: 'add', path: '/name', value: 'foo' }];
-    expect(checkPermAndCompile(perms, patch, 'xr--')).toEqual({ name: 'foo' });
+    const patchMap = [{ op: 'add', path: '/name', value: 'foo' }];
+    expect(checkPermAndCompile(perms, patchMap, 'xr--'))
+      .toEqual({ name: 'foo', patchMap });
   });
 
   it('should allow update', () => {
-    const patch = [{ op: 'replace', path: '/name', value: 'foo' }];
-    expect(checkPermAndCompile(perms, patch, 'xru-')).toEqual({ name: 'foo' });
+    const patchMap = [{ op: 'replace', path: '/name', value: 'foo' }];
+    expect(checkPermAndCompile(perms, patchMap, 'xru-'))
+      .toEqual({ name: 'foo', patchMap });
   });
 
   it('should allow delete', () => {
-    const patch = [{ op: 'remove', path: '/name' }];
-    expect(checkPermAndCompile(perms, patch, 'xrud')).toEqual({});
+    const patchMap = [{ op: 'remove', path: '/name' }];
+    expect(checkPermAndCompile(perms, patchMap, 'xrud'))
+      .toEqual({ patchMap });
   });
 
   it('should halt update: field not in perms', () => {
@@ -79,8 +82,12 @@ describe('Perm Check', () => {
   });
 
   it('should allow update: collection field', () => {
-    const patch = [{ op: 'replace', path: '/items/1/soldOut', value: true }];
-    expect(checkPermAndCompile(perms, patch, 'xru-')).toEqual({ items: [{ soldOut: true }] });
+    const patchMap = [{ op: 'replace', path: '/items/1/soldOut', value: true }];
+    expect(checkPermAndCompile(perms, patchMap, 'xru-'))
+      .toEqual({
+        items: [{ soldOut: true }],
+        patchMap,
+      });
   });
 
   it('should allow:', () => {
@@ -93,6 +100,7 @@ describe('Perm Check', () => {
             active: true, name: 'abc', price: 3, soldOut: false,
           },
         ],
+        patchMap: patches,
       },
     );
   });

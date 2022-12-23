@@ -60,6 +60,10 @@ export const checkPermAndCompile = (fields, patches, xrud) => {
   const data = {};
   let hasArray = false;
 
+  const addOps = [];
+  const updOps = [];
+  const delOps = [];
+
   if (!patches.length) {
     throw new Error('Empty JSON patch map.');
   }
@@ -68,8 +72,15 @@ export const checkPermAndCompile = (fields, patches, xrud) => {
     const { op, path, value } = patches[i];
     const isArrayItem = /\/\d\//.test(path);
 
-    if (op === 'add' && !canAdd) throw new Error(makeMessage('add', path));
-    if (op === 'remove' && !canDel) throw new Error(makeMessage('delete', path));
+    if (op === 'add') {
+      if (canAdd) addOps.push(patches[i])
+      else throw new Error(makeMessage('add', path));
+    }
+
+    if (op === 'remove') {
+      if (canDel) delOps.push(patches[i])
+      else throw new Error(makeMessage('delete', path));  
+    }
 
     if (op === 'replace') {
       if (!canUpd) {
@@ -83,6 +94,8 @@ export const checkPermAndCompile = (fields, patches, xrud) => {
       } else if (!fields.includes(path)) {
         throw new Error(makeMessage('update field', path));
       }
+
+      updOps.push(patches[i])
     }
 
     if (['add', 'replace'].includes(op)) {
@@ -91,7 +104,8 @@ export const checkPermAndCompile = (fields, patches, xrud) => {
     }
   }
 
-  return stripNilArrItem(data);
+  const complied = stripNilArrItem(data);
+  return { ...complied, patchMap: [...updOps, ...addOps, ...delOps] };
 };
 
 export default {
