@@ -105,7 +105,7 @@ export const checkPermAndCompile = (fields, patches, xrud) => {
   }
 
   const complied = stripNilArrItem(data);
-  return { ...complied, patchMap: [...updOps, ...addOps, ...delOps] };
+  return { ...complied, patchMap: [...addOps, ...updOps, ...delOps] };
 };
 
 export default {
