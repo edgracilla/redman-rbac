@@ -5,33 +5,7 @@ import jptr from 'jsonpointer';
 
 const makeMessage = (action, field) => `You are not allowed to ${action} '${field}'.`;
 
-export const toPartialPerm = (xrud) => {
-  const [POST, GET, PATCH, DELETE] = xrud;
-
-  return {
-    readOwned: GET === 'r',
-    executeOwned: POST === 'x',
-    updateOwned: PATCH === 'u',
-    deleteOwned: DELETE === 'd',
-  };
-};
-
-export const isVerbAuthorized = (xrud, verb) => {
-  const [POST, GET, PATCH, DELETE] = xrud;
-  let isAuthorized = false;
-
-  switch (verb) {
-    case 'GET': isAuthorized = GET === 'R' || GET === 'r'; break;
-    case 'POST': isAuthorized = POST === 'X' || POST === 'x'; break;
-    case 'PATCH': isAuthorized = PATCH === 'U' || PATCH === 'u'; break;
-    case 'DELETE': isAuthorized = DELETE === 'D' || DELETE === 'd'; break;
-    default: isAuthorized = false;
-  }
-
-  return isAuthorized;
-};
-
-const stripNilArrItem = (obj) => {
+export const stripNilArrItem = (obj) => {
   const keys = Object.keys(obj);
 
   for (let i = 0; i < keys.length; i += 1) {
@@ -50,15 +24,50 @@ const stripNilArrItem = (obj) => {
   return obj;
 };
 
-export const checkPermAndCompile = (fields, patches, xrud) => {
-  const [add, , upd, del] = xrud;
+export const checkPermAndCompile = (perms, verb, patches = []) => {
+  const { verbs, fields } = perms;
+  const [exe, get, upd, del] = verbs;
 
-  const canAdd = add === 'X' || add === 'x';
-  const canUpd = upd === 'U' || upd === 'u';
-  const canDel = del === 'D' || del === 'd';
+  const exeFull = exe === 'X'; const exePart = exe === 'x'; const canAdd = exeFull || exePart;
+  const getFull = get === 'R'; const getPart = get === 'r'; const canGet = getFull || getPart;
+  const updFull = upd === 'U'; const updPart = upd === 'u'; const canUpd = updFull || updPart;
+  const delFull = del === 'D'; const delPart = del === 'd'; const canDel = delFull || delPart;
 
   const data = {};
   let hasArray = false;
+  let isAuthorized = false;
+
+  // -- verb method validation
+
+  switch (verb) {
+    case 'GET': isAuthorized = canGet; break;
+    case 'POST': isAuthorized = canAdd; break;
+    case 'PATCH': isAuthorized = canUpd; break;
+    case 'DELETE': isAuthorized = canDel; break;
+    default: isAuthorized = false;
+  }
+
+  if (!isAuthorized) {
+    throw new Error(`You are not authorized to perform '${verb}' operation.`);
+  }
+
+  // -- partial perm indicators
+
+  const partialPerms = {
+    readOwned: getPart,
+    executeOwned: exePart,
+    updateOwned: updPart,
+    deleteOwned: delPart,
+  };
+
+  if (verb !== 'PATCH') {
+    return { partialPerms };
+  }
+
+  // -- patch processes:
+
+  // complie jpatch arr to {} for succedding field value validation (Ajv, Joi, etc.)
+  // if partial access, validate each field permission
 
   const addOps = [];
   const updOps = [];
@@ -83,16 +92,14 @@ export const checkPermAndCompile = (fields, patches, xrud) => {
     }
 
     if (op === 'replace') {
-      if (!canUpd) {
-        throw new Error(makeMessage('update', path));
-      }
-
-      if (isArrayItem) {
-        if (!fields.includes(path.replace(/\/\d\//g, '/*/'))) {
-          throw new Error(makeMessage('update collection field', path));
+      if (updPart) {
+        if (isArrayItem) {
+          if (!fields.includes(path.replace(/\/\d\//g, '/*/'))) {
+            throw new Error(makeMessage('update collection field', path));
+          }
+        } else if (!fields.includes(path)) {
+          throw new Error(makeMessage('update field', path));
         }
-      } else if (!fields.includes(path)) {
-        throw new Error(makeMessage('update field', path));
       }
 
       updOps.push(patches[i]);
@@ -105,10 +112,13 @@ export const checkPermAndCompile = (fields, patches, xrud) => {
   }
 
   const complied = stripNilArrItem(data);
-  return { ...complied, patchMap: [...addOps, ...updOps, ...delOps] };
+
+  return {
+    partialPerms,
+    patchData: { ...complied, patchMap: [...addOps, ...updOps, ...delOps] },
+  };
 };
 
 export default {
-  isVerbAuthorized,
   checkPermAndCompile,
 };

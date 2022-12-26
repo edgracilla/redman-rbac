@@ -1,21 +1,11 @@
 import { checkPermAndCompile } from '../index.mjs';
 
-const perms = [
+const fields = [
   '/name',
   '/items/*/soldOut',
 ];
 
 const patches = [
-  {
-    op: 'replace',
-    path: '/name',
-    value: 'Test Addonx',
-  },
-  {
-    op: 'replace',
-    path: '/items/1/soldOut',
-    value: true,
-  },
   {
     op: 'add',
     path: '/items/2',
@@ -27,71 +17,102 @@ const patches = [
     },
   },
   {
+    op: 'replace',
+    path: '/name',
+    value: 'Test Addonx',
+  },
+  {
+    op: 'replace',
+    path: '/items/1/soldOut',
+    value: true,
+  },
+  {
     op: 'remove',
     path: '/items/0',
   },
 ];
 
-describe('Perm Check', () => {
-  it('should halt add', () => {
-    const patch = [{ op: 'add', path: '/name', value: 'foo' }];
-    const error = new Error("You are not allowed to add '/name'.");
-    expect(() => checkPermAndCompile(perms, patch, '-r--')).toThrow(error);
-  });
+const verb = 'PATCH';
 
-  it('should halt update', () => {
-    const patch = [{ op: 'replace', path: '/name', value: 'foo' }];
-    const error = new Error("You are not allowed to update '/name'.");
-    expect(() => checkPermAndCompile(perms, patch, '-r--')).toThrow(error);
-  });
-
-  it('should halt delete', () => {
-    const patch = [{ op: 'remove', path: '/name' }];
-    const error = new Error("You are not allowed to delete '/name'.");
-    expect(() => checkPermAndCompile(perms, patch, '-r--')).toThrow(error);
-  });
-
+describe('PATCH Check', () => {
   it('should allow add', () => {
+    const perms = { fields, verbs: 'x-u-' };
     const patchMap = [{ op: 'add', path: '/name', value: 'foo' }];
-    expect(checkPermAndCompile(perms, patchMap, 'xr--'))
-      .toEqual({ name: 'foo', patchMap });
+    const { patchData } = checkPermAndCompile(perms, verb, patchMap);
+
+    expect(patchData).toEqual({ name: 'foo', patchMap });
   });
 
   it('should allow update', () => {
+    const perms = { fields, verbs: '--u-' };
     const patchMap = [{ op: 'replace', path: '/name', value: 'foo' }];
-    expect(checkPermAndCompile(perms, patchMap, 'xru-'))
-      .toEqual({ name: 'foo', patchMap });
+    const { patchData } = checkPermAndCompile(perms, verb, patchMap);
+
+    expect(patchData).toEqual({ name: 'foo', patchMap });
   });
 
   it('should allow delete', () => {
+    const perms = { fields, verbs: '--ud' };
     const patchMap = [{ op: 'remove', path: '/name' }];
-    expect(checkPermAndCompile(perms, patchMap, 'xrud'))
-      .toEqual({ patchMap });
+    const { patchData } = checkPermAndCompile(perms, verb, patchMap);
+
+    expect(patchData).toEqual({ patchMap });
+  });
+
+  it('should halt update: epmty patch data', () => {
+    const perms = { fields, verbs: '--u-' };
+    const error = new Error('Empty JSON patch map.');
+
+    expect(() => checkPermAndCompile(perms, verb, [])).toThrow(error);
+  });
+
+  it('should halt update: add field', () => {
+    const perms = { fields, verbs: '--u-' };
+    const patch = [{ op: 'add', path: '/name', value: 'foo' }];
+    const error = new Error("You are not allowed to add '/name'.");
+
+    expect(() => checkPermAndCompile(perms, verb, patch)).toThrow(error);
   });
 
   it('should halt update: field not in perms', () => {
+    const perms = { fields, verbs: '--u-' };
     const patch = [{ op: 'replace', path: '/foo', value: 'foo' }];
     const error = new Error("You are not allowed to update field '/foo'.");
-    expect(() => checkPermAndCompile(perms, patch, '-ru-')).toThrow(error);
+
+    expect(() => checkPermAndCompile(perms, verb, patch)).toThrow(error);
+  });
+
+  it('should halt update: delete field', () => {
+    const perms = { fields, verbs: '--u-' };
+    const patch = [{ op: 'remove', path: '/name' }];
+    const error = new Error("You are not allowed to delete '/name'.");
+
+    expect(() => checkPermAndCompile(perms, verb, patch)).toThrow(error);
   });
 
   it('should halt update: collection field not in perms', () => {
+    const perms = { fields, verbs: '--u-' };
     const patch = [{ op: 'replace', path: '/foo/1/bar', value: 'foo' }];
     const error = new Error("You are not allowed to update collection field '/foo/1/bar'.");
-    expect(() => checkPermAndCompile(perms, patch, '-ru-')).toThrow(error);
+    expect(() => checkPermAndCompile(perms, verb, patch)).toThrow(error);
   });
 
   it('should allow update: collection field', () => {
+    const perms = { fields, verbs: '--u-' };
     const patchMap = [{ op: 'replace', path: '/items/1/soldOut', value: true }];
-    expect(checkPermAndCompile(perms, patchMap, 'xru-'))
-      .toEqual({
-        items: [{ soldOut: true }],
-        patchMap,
-      });
+    const { patchData } = checkPermAndCompile(perms, verb, patchMap);
+
+    expect(patchData).toEqual({
+      items: [{ soldOut: true }],
+      patchMap,
+    });
   });
 
-  it('should allow:', () => {
-    expect(checkPermAndCompile(perms, patches, 'xrud')).toEqual(
+  it('should allow: complex patches', () => {
+    const perms = { fields, verbs: 'x-ud' };
+    const { patchData } = checkPermAndCompile(perms, verb, patches);
+
+    expect(patchData).toEqual(
       {
         name: 'Test Addonx',
         items: [
