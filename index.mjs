@@ -6,7 +6,7 @@ import jptr from 'jsonpointer';
 const makeMessage = (action, field) => `You are not allowed to ${action} '${field}'.`;
 
 export const stripNilArrItem = (obj) => {
-  const keys = Object.keys(obj);
+  const keys = Object.keys(obj || {});
 
   for (let i = 0; i < keys.length; i += 1) {
     const key = keys[i];

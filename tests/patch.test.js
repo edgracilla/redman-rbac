@@ -125,4 +125,12 @@ describe('PATCH Check', () => {
       },
     );
   });
+
+  it('should accept null', () => {
+    const perms = { fields, verbs: '--ud' };
+    const patchMap = [{ op: 'replace', path: '/name', value: null }];
+    const { patchData } = checkPermAndCompile(perms, verb, patchMap);
+
+    expect(patchData).toEqual({ name: null, patchMap });
+  });
 });
