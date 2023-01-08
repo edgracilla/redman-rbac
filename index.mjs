@@ -48,7 +48,7 @@ export const checkPermAndCompile = (perms, verb, patches = []) => {
   }
 
   if (!isAuthorized) {
-    throw new Error(`You are not authorized to perform '${verb}' operation.`);
+    throw new Error(`You are not authorized to perform '${verb}'.`);
   }
 
   // -- partial perm indicators

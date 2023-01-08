@@ -65,49 +65,49 @@ describe('Http Verb Auth', () => {
 
   describe('Negates', () => {
     it('should not allow POST', () => {
-      const error = new Error("You are not authorized to perform 'POST' operation.");
+      const error = new Error("You are not authorized to perform 'POST'.");
       expect(() => checkPermAndCompile(negate, 'POST')).toThrow(error);
     });
 
     it('should not allow GET', () => {
-      const error = new Error("You are not authorized to perform 'GET' operation.");
+      const error = new Error("You are not authorized to perform 'GET'.");
       expect(() => checkPermAndCompile(negate, 'GET')).toThrow(error);
     });
 
     it('should not allow PATCH', () => {
-      const error = new Error("You are not authorized to perform 'PATCH' operation.");
+      const error = new Error("You are not authorized to perform 'PATCH'.");
       expect(() => checkPermAndCompile(negate, 'PATCH')).toThrow(error);
     });
 
     it('should not allow DELETE', () => {
-      const error = new Error("You are not authorized to perform 'DELETE' operation.");
+      const error = new Error("You are not authorized to perform 'DELETE'.");
       expect(() => checkPermAndCompile(negate, 'DELETE')).toThrow(error);
     });
   });
 
   describe('Negate non supported verbs', () => {
     it('should not allow HEAD', () => {
-      const error = new Error("You are not authorized to perform 'HEAD' operation.");
+      const error = new Error("You are not authorized to perform 'HEAD'.");
       expect(() => checkPermAndCompile(gnostic, 'HEAD')).toThrow(error);
     });
 
     it('should not allow PUT', () => {
-      const error = new Error("You are not authorized to perform 'PUT' operation.");
+      const error = new Error("You are not authorized to perform 'PUT'.");
       expect(() => checkPermAndCompile(gnostic, 'PUT')).toThrow(error);
     });
 
     it('should not allow CONNECT', () => {
-      const error = new Error("You are not authorized to perform 'CONNECT' operation.");
+      const error = new Error("You are not authorized to perform 'CONNECT'.");
       expect(() => checkPermAndCompile(gnostic, 'CONNECT')).toThrow(error);
     });
 
     it('should not allow OPTIONS', () => {
-      const error = new Error("You are not authorized to perform 'OPTIONS' operation.");
+      const error = new Error("You are not authorized to perform 'OPTIONS'.");
       expect(() => checkPermAndCompile(gnostic, 'OPTIONS')).toThrow(error);
     });
 
     it('should not allow TRACE', () => {
-      const error = new Error("You are not authorized to perform 'TRACE' operation.");
+      const error = new Error("You are not authorized to perform 'TRACE'.");
       expect(() => checkPermAndCompile(gnostic, 'TRACE')).toThrow(error);
     });
   });
