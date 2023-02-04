@@ -97,7 +97,7 @@ export const checkPermAndCompile = (perms, verb, patches = []) => {
           if (!fields.includes(path.replace(/\/\d\//g, '/*/'))) {
             throw new Error(makeMessage('update collection field', path));
           }
-        } else if (!fields.includes(path)) {
+        } else if (Array.isArray(fields) && !fields.includes(path)) {
           throw new Error(makeMessage('update field', path));
         }
       }

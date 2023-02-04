@@ -133,4 +133,12 @@ describe('PATCH Check', () => {
 
     expect(patchData).toEqual({ name: null, patchMap });
   });
+
+  it('should accept empty fields', () => {
+    const perms = { verbs: '--ud' };
+    const patchMap = [{ op: 'replace', path: '/name', value: null }];
+    const { patchData } = checkPermAndCompile(perms, verb, patchMap);
+
+    expect(patchData).toEqual({ name: null, patchMap });
+  });
 });
